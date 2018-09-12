@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormControlName} from '@angular/forms';
-import { UserService } from './user.service';
+import { FormGroup, FormBuilder, FormControlName } from '@angular/forms';
+import { UserService } from './services/user.service';
 import { IUser } from './models/user.model';
 
 @Component({
@@ -8,49 +8,60 @@ import { IUser } from './models/user.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{ 
+export class AppComponent implements OnInit {
   title = 'My First Angular App!';
 
   userSearchForm: FormGroup;
-  users : IUser[] = [];
-  userRepoDetails: any[] = [];
+  usersList: IUser[] = [];
   totalResults: number;
-  showDetailsButton : boolean = true;
+  sortBy: string;
+  orderBy: boolean;
 
-  constructor(private formBuilder : FormBuilder,
-    private userService : UserService){
+  constructor(private formBuilder: FormBuilder,
+    private userService: UserService) {
   }
 
-  ngOnInit(){
-    this.userSearchForm = this.formBuilder.group({   
-    'searchUser' : ['']
+  ngOnInit() {
+    this.sortBy = 'login';
+    this.orderBy = false;
+    this.userSearchForm = this.formBuilder.group({
+      'searchUser': [''],
+      'sortBy': ['NameASC']
     })
   }
 
-  searchUser(){
-    this.userService.getUsers(this.userSearchForm.get('searchUser').value)
-    .subscribe(data => {
-      console.log(data);
-      this.totalResults = data['total_count'];
-      this.users = data['items'];
-      
-    })
+  searchUser() {
+    this.userService.getUsers(this.userSearchForm.get('searchUser').value, this.userSearchForm.get('sortBy').value)
+      .subscribe(data => {
+        this.totalResults = data['total_count'];
+        this.usersList = data['items'];
+      })
   }
 
-  userDetails(userLoginName){
-    this.showDetailsButton = false;
-    this.userService.userRepoDetails(userLoginName)
-    .subscribe(data => {
-      console.log(data);
-      this.userRepoDetails = data;
-      
-    })
-  }
+  onChange() {
+    switch (this.userSearchForm.get('sortBy').value) {
+      case 'NameASC':
+        this.sortBy = 'login';
+        this.orderBy = false;
+        break;
 
-  Collapse(){
-    this.showDetailsButton = true;
-    this.userRepoDetails = [];
+      case 'NameDESC':
+        this.sortBy = 'login';
+        this.orderBy = true;
+        break;
+      case 'scoreASC':
+        this.sortBy = 'score';
+        this.orderBy = false;
+        break;
+      case 'scoreDESC':
+        this.sortBy = 'score';
+        this.orderBy = true;
+        break;
+      default:
+        
 
+
+    }
   }
 }
 

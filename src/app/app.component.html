@@ -1,36 +1,26 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<form [formGroup]="userSearchForm" novalidate>
-    <input type="text" placeholder="Search" formControlName="searchUser" (focusout)="searchUser()">
+<nav class="navbar navbar-light" style="background-color: #3e86bb;">
+  <div class="container">
+    <form class="form-inline row justify-content-center" [formGroup]="userSearchForm" novalidate>
 
-  </form>
-  <b *ngIf="totalResults !=null">Total Results : {{totalResults}}</b>
-<div *ngFor="let user of users">
-  <img [src]="user.avatar_url"/>
-  <h3>{{user.login}}</h3>
-  <p>{{user.html_url}}</p>
-  <button *ngIf="showDetailsButton" (click)="userDetails(user.login)">Details</button>
-  <button *ngIf="!showDetailsButton" (click)="Collapse()">Collapse</button>
-  <div *ngFor="let userDetails of userRepoDetails">
-    <label>{{userDetails.name}}</label> 
-    <label *ngIf="userDetails.language !=null"> - {{userDetails.language}}</label>
+      <div class="col">
+        <select class="form-control" formControlName="sortBy" (change)="onChange()">
+          <option value='NameASC'>Name (A-Z)</option>
+          <option value='NameDESC'>Name (Z-A)</option>
+          <option value='scoreASC'>Rank &#8593;</option>
+          <option value='scoreDESC'>Rank &#8595;</option>
+        </select>
+      </div>
+      <div class="input-group col">
+        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"
+          formControlName="searchUser" (focusout)="searchUser()">
+        <div class="input-group-append">
+          <span class="input-group-text"> <i class="fa fa-search"></i></span>
+        </div>
+      </div>
+
+    </form>
   </div>
-</div>
+</nav>
 
-<!-- <mat-card class="example-card">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>Shiba Inu</mat-card-title>
-    <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <p>
-      The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-      A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-      bred for hunting.
-    </p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
-  </mat-card-actions>
-</mat-card> -->
+<b *ngIf="totalResults !=null">Total Results : {{totalResults}}</b>
+<user-list [usersList]="usersList" [sortBy]="sortBy" [orderBy]="orderBy"></user-list>

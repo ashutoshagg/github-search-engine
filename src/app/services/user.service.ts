@@ -12,8 +12,8 @@ const httpOptions = {
 export class UserService {
   constructor(private http: HttpClient) { }
 
-  getUsers(userName: string): Observable<any[]> {
-    let url = 'http://api.github.com/search/users?q=' + userName;
+  getUsers(userName: string, sortBy : string): Observable<any[]> {
+    let url = 'http://api.github.com/search/users?q=' + userName + '&page=1&per_page=10'; //&sort=id&order=desc&page=1&per_page=10
     return this.http.get<any[]>(url)
     .pipe(    
       catchError(this.handleError)
